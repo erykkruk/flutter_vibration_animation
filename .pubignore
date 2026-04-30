@@ -1,0 +1,11 @@
+.dart_tool/
+build/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+.github/
+doc/api/
+example/build/
+example/ios/Pods/
+example/.dart_tool/
