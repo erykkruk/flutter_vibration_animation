@@ -45,6 +45,18 @@ class VibrationDemoPage extends StatelessWidget {
           _BouncyPressDemo(),
           SizedBox(height: 32),
           _UnboxingDemo(),
+          SizedBox(height: 32),
+          _ToggleDemo(),
+          SizedBox(height: 32),
+          _SliderDemo(),
+          SizedBox(height: 32),
+          _StepperDemo(),
+          SizedBox(height: 32),
+          _ShakeDemo(),
+          SizedBox(height: 32),
+          _SlideToConfirmDemo(),
+          SizedBox(height: 32),
+          _RatingDemo(),
           SizedBox(height: 40),
           Divider(),
           SizedBox(height: 16),
@@ -506,6 +518,255 @@ class _UnboxingDemoState extends State<_UnboxingDemo> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Demo 6 — HapticToggle
+// ---------------------------------------------------------------------------
+
+class _ToggleDemo extends StatefulWidget {
+  const _ToggleDemo();
+
+  @override
+  State<_ToggleDemo> createState() => _ToggleDemoState();
+}
+
+class _ToggleDemoState extends State<_ToggleDemo> {
+  bool _on = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DemoCard(
+      title: 'HapticToggle',
+      subtitle: 'Animated thumb + selection tick on every flip',
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('Notifications', style: TextStyle(fontSize: 16)),
+          HapticToggle(
+            value: _on,
+            onChanged: (v) => setState(() => _on = v),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Demo 7 — HapticSlider
+// ---------------------------------------------------------------------------
+
+class _SliderDemo extends StatefulWidget {
+  const _SliderDemo();
+
+  @override
+  State<_SliderDemo> createState() => _SliderDemoState();
+}
+
+class _SliderDemoState extends State<_SliderDemo> {
+  double _v = 30;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DemoCard(
+      title: 'HapticSlider',
+      subtitle: 'Light tick at every detent — drag to feel them',
+      child: Column(
+        children: [
+          HapticSlider(
+            value: _v,
+            min: 0,
+            max: 100,
+            divisions: 10,
+            onChanged: (v) => setState(() => _v = v),
+          ),
+          Text('${_v.round()}', style: const TextStyle(fontSize: 18)),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Demo 8 — HapticStepper
+// ---------------------------------------------------------------------------
+
+class _StepperDemo extends StatefulWidget {
+  const _StepperDemo();
+
+  @override
+  State<_StepperDemo> createState() => _StepperDemoState();
+}
+
+class _StepperDemoState extends State<_StepperDemo> {
+  int _count = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DemoCard(
+      title: 'HapticStepper',
+      subtitle:
+          'Bouncy −/+ buttons + sliding number. Heavy tick at boundaries.',
+      child: Center(
+        child: HapticStepper(
+          value: _count,
+          min: 0,
+          max: 9,
+          onChanged: (v) => setState(() => _count = v),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Demo 9 — HapticShake (wrong password feel)
+// ---------------------------------------------------------------------------
+
+class _ShakeDemo extends StatefulWidget {
+  const _ShakeDemo();
+
+  @override
+  State<_ShakeDemo> createState() => _ShakeDemoState();
+}
+
+class _ShakeDemoState extends State<_ShakeDemo> {
+  final _shakeKey = GlobalKey<HapticShakeState>();
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _check() {
+    if (_controller.text == '1234') {
+      Haptics.notification(HapticNotificationStyle.success);
+    } else {
+      _shakeKey.currentState?.shake();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _DemoCard(
+      title: 'HapticShake',
+      subtitle: 'Type anything but "1234" and tap "Submit" to feel the error.',
+      child: Column(
+        children: [
+          HapticShake(
+            key: _shakeKey,
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                hintText: 'PIN',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton(
+              onPressed: _check,
+              child: const Text('Submit'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Demo 10 — SlideToConfirm
+// ---------------------------------------------------------------------------
+
+class _SlideToConfirmDemo extends StatefulWidget {
+  const _SlideToConfirmDemo();
+
+  @override
+  State<_SlideToConfirmDemo> createState() => _SlideToConfirmDemoState();
+}
+
+class _SlideToConfirmDemoState extends State<_SlideToConfirmDemo> {
+  final _slideKey = GlobalKey<SlideToConfirmState>();
+  String? _last;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DemoCard(
+      title: 'SlideToConfirm',
+      subtitle: 'Drag the handle all the way right. Ticks at 25/50/75%, '
+          'heavy thump on completion.',
+      child: Column(
+        children: [
+          SlideToConfirm(
+            key: _slideKey,
+            label: 'Slide to pay',
+            onConfirmed: () => setState(() => _last = 'Confirmed!'),
+          ),
+          if (_last != null) ...[
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(_last!, style: const TextStyle(color: Colors.greenAccent)),
+                TextButton(
+                  onPressed: () {
+                    setState(() => _last = null);
+                    _slideKey.currentState?.reset();
+                  },
+                  child: const Text('Reset'),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Demo 11 — HapticRating (cascading stars)
+// ---------------------------------------------------------------------------
+
+class _RatingDemo extends StatefulWidget {
+  const _RatingDemo();
+
+  @override
+  State<_RatingDemo> createState() => _RatingDemoState();
+}
+
+class _RatingDemoState extends State<_RatingDemo> {
+  int _rating = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DemoCard(
+      title: 'HapticRating',
+      subtitle: 'Tap a star — all stars cascade-fill with a tick each',
+      child: Column(
+        children: [
+          Center(
+            child: HapticRating(
+              value: _rating,
+              starCount: 5,
+              onChanged: (v) => setState(() => _rating = v),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _rating == 0 ? 'No rating' : '$_rating / 5',
+            style: const TextStyle(color: Colors.white60),
+          ),
+        ],
       ),
     );
   }

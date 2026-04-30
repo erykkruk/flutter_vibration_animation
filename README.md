@@ -119,6 +119,21 @@ await HapticPattern.builder()
 
 ## Animated widgets
 
+The library ships with a set of drop-in widgets that combine an animation
+with the right haptic at the right moment. Each one is a single
+self-contained file in `lib/src/widgets/` — read one, copy the pattern.
+
+| Widget | What it does | Pattern |
+|--------|--------------|---------|
+| [`HapticBounce`](#hapticbounce--tactile-bounce-on-tap) | Tap → squash → recoil → elastic settle | 3-segment `TweenSequence`, controller-driven |
+| [`PressAndHoldToConfirm`](#pressandholdtoconfirm--long-press-with-progress-ring) | Hold to confirm with ring + densifying ticks | One controller drives ring + haptics + callback |
+| `HapticToggle` | Animated switch + tick on flip | Custom-painted thumb with `easeOutBack` slide |
+| `HapticSlider` | Slider with detent ticks | Detect detent crossings via `lastIndex` cache |
+| `HapticStepper` | −/+ counter with bouncing buttons | Composes `HapticBounce` + `AnimatedSwitcher` |
+| `HapticShake` | Wiggle + error notification | Externally triggered via `GlobalKey<State>.shake()` |
+| `SlideToConfirm` | Drag handle to end to confirm | Drag-driven controller with snap-back |
+| `HapticRating` | Tap a star → cascading fill + tick per star | Sequenced `Timer.periodic` |
+
 ### `HapticBounce` — tactile bounce on tap
 
 Wraps any widget with a press-down → recoil → elastic-settle animation
@@ -181,6 +196,117 @@ Architecture notes:
   restart the animation.
 * Releasing early snaps the ring back to zero and resets the haptic
   cursor — a re-press starts fresh.
+
+### `HapticToggle` — animated switch with selection tick
+
+```dart
+HapticToggle(
+  value: _enabled,
+  onChanged: (v) => setState(() => _enabled = v),
+)
+```
+
+### `HapticSlider` — slider with detent ticks
+
+```dart
+HapticSlider(
+  value: _v,
+  min: 0,
+  max: 100,
+  divisions: 10,                              // tick every 10 units
+  onChanged: (v) => setState(() => _v = v),
+)
+```
+
+### `HapticStepper` — bouncy −/+ counter
+
+```dart
+HapticStepper(
+  value: _count,
+  min: 0,
+  max: 99,
+  onChanged: (v) => setState(() => _count = v),
+)
+```
+
+### `HapticShake` — error wiggle
+
+```dart
+final shakeKey = GlobalKey<HapticShakeState>();
+
+HapticShake(key: shakeKey, child: TextField(/* ... */));
+
+// On validation failure:
+shakeKey.currentState?.shake();
+```
+
+### `SlideToConfirm` — drag-to-confirm pill
+
+```dart
+SlideToConfirm(
+  label: 'Slide to pay',
+  onConfirmed: () => pay(),
+)
+```
+
+Light ticks at 25%, 50%, 75% of drag, heavy thump on completion. Releasing
+before the end snaps back with a light tick.
+
+### `HapticRating` — cascading stars
+
+```dart
+HapticRating(
+  value: _rating,
+  starCount: 5,
+  onChanged: (v) => setState(() => _rating = v),
+)
+```
+
+Tapping the 4th star fires 4 selection ticks in sequence (one per star
+"lighting up"), driven by a `Timer.periodic` with a 65ms cascade delay.
+
+## Building your own widget
+
+The widgets above are intentionally small (~100–200 lines each). To add
+a new one, follow this pattern:
+
+1. **One file per widget** in `lib/src/widgets/your_widget.dart`.
+2. **Pick one of three pickers for what to do per gesture**:
+   - **Tap** — `GestureDetector(onTapDown / onTapUp / onTap / onTapCancel)`
+     when you want the press-down + release lifecycle.
+   - **Long-press / hold** — raw `Listener` so you get
+     `onPointerDown` / `onPointerUp` / `event.localPosition` immediately
+     and can implement single-pointer guards.
+   - **Drag** — `GestureDetector(onHorizontalDragUpdate / End)` for
+     anything slidey, or a draggable handle.
+3. **One `AnimationController` per widget**, driving everything that
+   needs to stay in sync (visual change + haptic schedule + callbacks).
+   Avoid running a `Timer` alongside an `AnimationController` — they
+   drift, and the user feels the drift.
+4. **Fire haptics from the `addListener` callback**, gated by a "what was
+   the last threshold I crossed" cursor (`int _lastIndex`, `Set<double>
+   _fired`). `while` loops, not `if`, so a stuttered frame still fires
+   every tick it crossed.
+5. **Pick the right haptic for the moment** — see the table below.
+6. **Cancel cleanly**: stop the controller, reset cursors, snap value
+   back to zero. Atomic, in one method.
+7. **Export from the barrel** in `lib/flutter_vibration_animation.dart`.
+8. **Write a widget test** — see `test/widgets_test.dart` for the
+   pattern (mock the channel with `messenger.setMockMethodCallHandler`).
+
+### Picking the right haptic
+
+| Moment | Haptic | Why |
+|--------|--------|-----|
+| Crossing a discrete step (slider, picker, page) | `Haptics.selection()` | Quietest tap — never fatiguing |
+| Press-down on a button | `Haptics.impact(light)` | Subtle "I felt your touch" |
+| Release / tap completes | `Haptics.impact(medium)` | The "click" |
+| Long-press completes / drag confirms | `Haptics.impact(heavy)` | Closes the loop with weight |
+| Validation passed | `Haptics.notification(success)` | Two-tap pattern, recognisable |
+| Soft error / boundary hit | `Haptics.notification(warning)` | Three-tap warning pattern |
+| Hard error / wrong input | `Haptics.notification(error)` | Sharp triple-tap |
+| Continuous waveform / heartbeat | `Vibration.vibrateWaveform(...)` | When duration matters more than crispness |
+| Custom intensity + sharpness curve | `HapticPattern.builder()...play()` | Core Haptics on iOS, amplitude on Android |
 
 ## Capability detection
 

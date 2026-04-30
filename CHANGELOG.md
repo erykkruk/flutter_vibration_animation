@@ -26,6 +26,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `UINotificationFeedbackGenerator`, `UISelectionFeedbackGenerator` and
   `CHHapticEngine` for custom patterns. AudioServices fallback for
   devices without Core Haptics.
+- `HapticToggle` — animated switch with custom-painted thumb, spring-back
+  `easeOutBack` curve and a selection tick on every flip.
+- `HapticSlider` — wraps the standard `Slider` and fires a light tick at
+  every detent crossing (configurable via `divisions` or `tickEvery`),
+  with a heavier tick at the min/max endpoints.
+- `HapticStepper` — composes two `HapticBounce` buttons around a sliding
+  number; light haptic on each step, heavy haptic when hitting `min`/`max`.
+- `HapticShake` — externally-triggered horizontal wiggle animation
+  (6-segment decaying `TweenSequence`) with an error notification haptic.
+  Triggered via `GlobalKey<HapticShakeState>().shake()`.
+- `SlideToConfirm` — drag-to-confirm pill (Uber-style) with light ticks at
+  25/50/75% drag, heavy thump on completion, and spring-back with a tick
+  on early release. State exposes `reset()` for re-arming.
+- `HapticRating` — star row that cascade-fills with one selection tick per
+  star when tapped, configurable cascade delay.
+- README "Building your own widget" section with the recurring pattern
+  (one controller, gated thresholds, atomic cancel) and a table mapping
+  each interaction moment to the right haptic.
 - `HapticBounce` widget — drop-in tap wrapper with squash + recoil +
   elastic-settle bounce (3-segment `TweenSequence` with weights 1:2:3)
   synchronised with light/medium haptic impacts.
