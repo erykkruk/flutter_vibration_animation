@@ -26,3 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `UINotificationFeedbackGenerator`, `UISelectionFeedbackGenerator` and
   `CHHapticEngine` for custom patterns. AudioServices fallback for
   devices without Core Haptics.
+- Showcase example app with four animated demos:
+  - Typewriter — auto-typing text with a `selection` tick per character.
+  - Heartbeat — pulsing heart icon synced with `VibrationPatterns.heartbeat`.
+  - Loading ramp — progress bar 0→100% with light → medium → heavy haptic
+    impacts at 25/50/75% and a `success` notification at 100%.
+  - Bouncy press — gradient circle with scale-down on press, spring
+    bounce-back on release, and an escalating haptic on long-press.
