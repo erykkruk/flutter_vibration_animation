@@ -26,10 +26,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `UINotificationFeedbackGenerator`, `UISelectionFeedbackGenerator` and
   `CHHapticEngine` for custom patterns. AudioServices fallback for
   devices without Core Haptics.
-- Showcase example app with four animated demos:
+- `HapticBounce` widget — drop-in tap wrapper with squash + recoil +
+  elastic-settle bounce (3-segment `TweenSequence` with weights 1:2:3)
+  synchronised with light/medium haptic impacts.
+- `PressAndHoldToConfirm` widget — long-press confirmation with a
+  finger-tracking progress ring, 12-tick densifying haptic schedule,
+  escalating intensity (selection → light → medium → heavy) and a final
+  heavy impact on completion. Single `AnimationController` drives the
+  ring, haptics and callback in lock-step. Single-pointer guard,
+  cancel-on-early-release, and `reset()` for re-arming.
+- Showcase example app with five animated demos:
   - Typewriter — auto-typing text with a `selection` tick per character.
   - Heartbeat — pulsing heart icon synced with `VibrationPatterns.heartbeat`.
   - Loading ramp — progress bar 0→100% with light → medium → heavy haptic
     impacts at 25/50/75% and a `success` notification at 100%.
-  - Bouncy press — gradient circle with scale-down on press, spring
-    bounce-back on release, and an escalating haptic on long-press.
+  - Bouncy press — gradient circle wrapped in `HapticBounce`.
+  - Press & hold to unbox — gift-box card wrapped in
+    `PressAndHoldToConfirm` that opens to a celebration on completion.

@@ -43,6 +43,8 @@ class VibrationDemoPage extends StatelessWidget {
           _LoadingRampDemo(),
           SizedBox(height: 32),
           _BouncyPressDemo(),
+          SizedBox(height: 32),
+          _UnboxingDemo(),
           SizedBox(height: 40),
           Divider(),
           SizedBox(height: 16),
@@ -354,94 +356,152 @@ class _BouncyPressDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const _DemoCard(
-      title: 'Bouncy press',
-      subtitle: 'Tap & hold for impact + scale down, release for spring bounce',
-      child: Center(child: _BouncyButton()),
-    );
-  }
-}
-
-class _BouncyButton extends StatefulWidget {
-  const _BouncyButton();
-
-  @override
-  State<_BouncyButton> createState() => _BouncyButtonState();
-}
-
-class _BouncyButtonState extends State<_BouncyButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 120),
-      reverseDuration: const Duration(milliseconds: 320),
-    );
-    _scale = Tween<double>(begin: 1.0, end: 0.86).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-        reverseCurve: Curves.elasticOut,
+      title: 'Bouncy press (HapticBounce)',
+      subtitle: '3-phase TweenSequence: squash → recoil → elastic settle. '
+          'Light haptic on press, medium on release.',
+      child: Center(
+        child: HapticBounce(
+          child: _BouncyOrb(),
+        ),
       ),
     );
   }
+}
+
+class _BouncyOrb extends StatelessWidget {
+  const _BouncyOrb();
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Container(
+      width: 180,
+      height: 180,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF7C4DFF), Color(0xFFFF4081)],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.purpleAccent.withValues(alpha: 0.4),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: const Center(
+        child: Text(
+          'Press me',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
+}
 
-  void _press() {
-    Haptics.impact(HapticImpactStyle.light);
-    _controller.forward();
-  }
+// ---------------------------------------------------------------------------
+// Demo 5 — Press & hold to unbox (PressAndHoldToConfirm)
+// ---------------------------------------------------------------------------
 
-  void _release() {
-    Haptics.impact(HapticImpactStyle.medium);
-    _controller.reverse();
+class _UnboxingDemo extends StatefulWidget {
+  const _UnboxingDemo();
+
+  @override
+  State<_UnboxingDemo> createState() => _UnboxingDemoState();
+}
+
+class _UnboxingDemoState extends State<_UnboxingDemo> {
+  final _confirmKey = GlobalKey<PressAndHoldToConfirmState>();
+  bool _opened = false;
+
+  void _onConfirm() {
+    setState(() => _opened = true);
+    // Auto-reset after a moment so the demo can be replayed.
+    Future<void>.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      setState(() => _opened = false);
+      _confirmKey.currentState?.reset();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => _press(),
-      onTapUp: (_) => _release(),
-      onTapCancel: () {
-        _controller.reverse();
-      },
-      onLongPress: () => Haptics.impact(HapticImpactStyle.heavy),
-      child: ScaleTransition(
-        scale: _scale,
-        child: Container(
-          width: 180,
-          height: 180,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF7C4DFF), Color(0xFFFF4081)],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.purpleAccent.withValues(alpha: 0.4),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+    return _DemoCard(
+      title: 'Press & hold to unbox',
+      subtitle: '12 haptic ticks at densifying intervals — selection → light → '
+          'medium → heavy → final heavy on completion.',
+      child: SizedBox(
+        height: 240,
+        child: PressAndHoldToConfirm(
+          key: _confirmKey,
+          holdDuration: const Duration(seconds: 2),
+          onConfirm: _onConfirm,
+          ringSize: 84,
+          ringColor: Colors.amberAccent,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
               ),
-            ],
-          ),
-          child: const Center(
-            child: Text(
-              'Press me',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+            ),
+            child: Center(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                transitionBuilder: (child, animation) => ScaleTransition(
+                  scale: CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutBack,
+                  ),
+                  child: FadeTransition(opacity: animation, child: child),
+                ),
+                child: _opened
+                    ? const Column(
+                        key: ValueKey('opened'),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.celebration,
+                            size: 96,
+                            color: Colors.amberAccent,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Unboxed!',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      )
+                    : const Column(
+                        key: ValueKey('closed'),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.card_giftcard,
+                            size: 96,
+                            color: Colors.amberAccent,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Press and hold',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
               ),
             ),
           ),

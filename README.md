@@ -29,6 +29,11 @@ patterns with intensity and sharpness curves.
   alarm, tick, success, failure, charge-up
 - **`HapticCapabilities`** — runtime detection of vibrator hardware,
   amplitude control, Core Haptics, predefined effects
+- **`HapticBounce`** — drop-in tap wrapper with squash + recoil + elastic
+  settle bounce (3-segment `TweenSequence`), wired to light/medium impact
+- **`PressAndHoldToConfirm`** — long-press confirmation with a finger-tracking
+  progress ring and a 12-tick densifying haptic schedule that escalates
+  from `selection` → `light` → `medium` → `heavy`
 
 ## Platform support
 
@@ -111,6 +116,71 @@ await HapticPattern.builder()
   is ignored (no perceptual analogue).
 * On older devices, `play()` throws `UnsupportedHapticException` — guard
   with `HapticCapabilities.query()` if you need graceful degradation.
+
+## Animated widgets
+
+### `HapticBounce` — tactile bounce on tap
+
+Wraps any widget with a press-down → recoil → elastic-settle animation
+synchronised with a light/medium impact. Drop-in replacement for
+`GestureDetector(onTap: …)` on buttons that should feel alive.
+
+```dart
+HapticBounce(
+  onTap: () => doSomething(),
+  child: Container(
+    padding: const EdgeInsets.all(24),
+    decoration: const BoxDecoration(/* ... */),
+    child: const Text('Press me'),
+  ),
+)
+```
+
+The scale follows a 3-segment `TweenSequence` with weights 1 : 2 : 3:
+
+1. **squash** — `1.0 → 0.92`, `easeIn`
+2. **recoil** — `0.92 → 1.12` (overshoots 1.0), `easeOutCubic`
+3. **settle** — `1.12 → 1.0`, `elasticOut`
+
+Set `bounceOnRelease: false` for a plain symmetric press with no overshoot.
+
+### `PressAndHoldToConfirm` — long-press with progress ring
+
+Requires the user to hold for [holdDuration] before firing `onConfirm`. A
+circular progress ring renders at the finger position, and a 12-tick
+haptic schedule fires at progressively shorter intervals — escalating
+from `selection` → `light` → `medium` → `heavy`, sealed with a final
+`heavy` impact at completion.
+
+```dart
+final key = GlobalKey<PressAndHoldToConfirmState>();
+
+PressAndHoldToConfirm(
+  key: key,
+  holdDuration: const Duration(seconds: 2),
+  onConfirm: () => unbox(),
+  child: const SizedBox(
+    height: 240,
+    child: Center(child: Icon(Icons.card_giftcard, size: 96)),
+  ),
+)
+
+// Re-arm for another confirmation later:
+key.currentState?.reset();
+```
+
+Architecture notes:
+
+* A single `AnimationController` drives the ring, the haptic schedule
+  and the completion callback — no race conditions between independent
+  timers.
+* Pointer events are captured with a raw `Listener` (not `GestureDetector`)
+  so the press starts immediately and the live finger position is
+  available.
+* A single-pointer guard rejects secondary touches that would otherwise
+  restart the animation.
+* Releasing early snaps the ring back to zero and resets the haptic
+  cursor — a re-press starts fresh.
 
 ## Capability detection
 
