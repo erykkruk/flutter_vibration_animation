@@ -62,7 +62,7 @@ class Haptics {
   static Future<void> impact(
     HapticImpactStyle style,
   ) =>
-      FlutterHapticsChannel.invoke<void>('haptic.impact', {
+      HapticKitChannel.invoke<void>('haptic.impact', {
         'style': style.name,
       });
 
@@ -70,14 +70,14 @@ class Haptics {
   static Future<void> notification(
     HapticNotificationStyle style,
   ) =>
-      FlutterHapticsChannel.invoke<void>('haptic.notification', {
+      HapticKitChannel.invoke<void>('haptic.notification', {
         'style': style.name,
       });
 
   /// Trigger a selection-changed tap. Use when scrolling through discrete
   /// values (pickers, sliders, segmented controls).
   static Future<void> selection() =>
-      FlutterHapticsChannel.invoke<void>('haptic.selection');
+      HapticKitChannel.invoke<void>('haptic.selection');
 
   /// Pre-warm haptic generators so the next call has the lowest possible
   /// latency. Optional — calling [impact] / [notification] / [selection]
@@ -86,7 +86,7 @@ class Haptics {
   /// Returns `true` when the platform actually pre-warmed something (iOS),
   /// and `false` when the call is a no-op on this platform (Android).
   static Future<bool> prepare() async {
-    final result = await FlutterHapticsChannel.invoke<bool>('haptic.prepare');
+    final result = await HapticKitChannel.invoke<bool>('haptic.prepare');
     return result ?? false;
   }
 }

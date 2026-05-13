@@ -42,7 +42,7 @@ class HapticCapabilities {
 
   /// Read the current device's capabilities.
   static Future<HapticCapabilities> query() async {
-    final raw = await FlutterHapticsChannel.invoke<Map<Object?, Object?>>(
+    final raw = await HapticKitChannel.invoke<Map<Object?, Object?>>(
       'capabilities.query',
     );
     final map = raw ?? const <Object?, Object?>{};

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-05-13
+
+### Changed
+- **Package renamed** from `flutter_haptics` to `haptic_kit` because the
+  former was rejected by pub.dev as too similar to the abandoned
+  `flutter_haptic` package. The repository URL is unchanged.
+- All identifiers updated to match: `HapticKitPlugin` (Android Kotlin
+  + iOS Swift), `HapticKitChannel` (Dart), Android package
+  `dev.erykkruk.haptic_kit`, method channel `dev.erykkruk/haptic_kit`.
+- Import path is now
+  `package:haptic_kit/haptic_kit.dart`.
+- Version 0.1.1 was tagged in git but never published — the public
+  history starts at `haptic_kit` 0.1.2.
+
 ## [0.1.1] - 2026-05-13
 
 ### Changed

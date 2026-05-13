@@ -1,4 +1,4 @@
-group 'dev.erykkruk.flutter_haptics'
+group 'dev.erykkruk.haptic_kit'
 version '1.0'
 
 buildscript {
@@ -24,7 +24,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace 'dev.erykkruk.flutter_haptics'
+    namespace 'dev.erykkruk.haptic_kit'
     compileSdk 34
 
     compileOptions {

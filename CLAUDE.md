@@ -1,4 +1,4 @@
-# flutter_haptics
+# haptic_kit
 
 ## Overview
 
@@ -29,9 +29,9 @@ cd example && flutter run  # Run demo
 ## Directory Structure
 
 ```
-flutter_haptics/
+haptic_kit/
 ├── lib/
-│   ├── flutter_haptics.dart   # Barrel — public API
+│   ├── haptic_kit.dart   # Barrel — public API
 │   └── src/
 │       ├── exceptions.dart                # Typed exceptions
 │       ├── haptic_capabilities.dart       # Runtime detection
@@ -45,14 +45,14 @@ flutter_haptics/
 │   ├── build.gradle
 │   └── src/main/
 │       ├── AndroidManifest.xml            # VIBRATE permission
-│       └── kotlin/dev/erykkruk/flutter_haptics/
-│           ├── FlutterHapticsPlugin.kt
+│       └── kotlin/dev/erykkruk/haptic_kit/
+│           ├── HapticKitPlugin.kt
 │           ├── HapticFeedbackHandler.kt
 │           └── VibrationManager.kt
 ├── ios/
-│   ├── flutter_haptics.podspec
+│   ├── haptic_kit.podspec
 │   └── Classes/
-│       ├── FlutterHapticsPlugin.swift
+│       ├── HapticKitPlugin.swift
 │       ├── HapticFeedbackHandler.swift   # UIFeedbackGenerator wrapper
 │       └── CoreHapticsHandler.swift      # CHHapticEngine wrapper
 ├── test/
@@ -68,7 +68,7 @@ flutter_haptics/
 **Method Channel Plugin** (no FFI):
 
 1. Dart wraps each domain (`HapticFeedback`, `Vibration`, `HapticPattern`) as
-   a static class calling `FlutterHapticsChannel.invoke`.
+   a static class calling `HapticKitChannel.invoke`.
 2. `method_channel.dart` is a private singleton that translates
    `PlatformException` → typed `VibrationException` subclasses.
 3. Native side dispatches by method name and uses small handler classes:
@@ -79,7 +79,7 @@ flutter_haptics/
 
 ### Channel name
 
-`dev.erykkruk/flutter_haptics` — used by both sides.
+`dev.erykkruk/haptic_kit` — used by both sides.
 
 ### Method names
 
@@ -126,7 +126,7 @@ Native errors map by code:
 ### NIGDY
 
 1. Bezpośrednie wywołania `MethodChannel` w API publicznym — zawsze przez
-   `FlutterHapticsChannel.invoke` (uniformizuje obsługę błędów).
+   `HapticKitChannel.invoke` (uniformizuje obsługę błędów).
 2. Surowe `throw Exception(…)` — zawsze typed `VibrationException`.
 3. Mutable global state w warstwie Dart — pluginy są singleton po stronie
    native, ale Dart API jest stateless (tylko `HapticPattern.builder` ma
@@ -155,12 +155,12 @@ Native errors map by code:
 ## New Feature Checklist
 
 1. [ ] Zaprojektuj API w Dart (klasa + doc comments + przykład)
-2. [ ] Dodaj method handler w `FlutterHapticsPlugin.kt`
+2. [ ] Dodaj method handler w `HapticKitPlugin.kt`
 3. [ ] Zaimplementuj logikę w odpowiednim handlerze (Android)
-4. [ ] Dodaj method handler w `FlutterHapticsPlugin.swift`
+4. [ ] Dodaj method handler w `HapticKitPlugin.swift`
 5. [ ] Zaimplementuj logikę w odpowiednim handlerze (iOS) z fallbackiem
 6. [ ] Zaktualizuj `HapticCapabilities` jeśli to nowa zdolność
-7. [ ] Eksport w `flutter_haptics.dart`
+7. [ ] Eksport w `haptic_kit.dart`
 8. [ ] Test mockujący `MethodChannel`
 9. [ ] Demo w `example/lib/main.dart`
 10. [ ] Update README + CHANGELOG

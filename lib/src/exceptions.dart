@@ -1,4 +1,4 @@
-/// Base class for all errors thrown by `flutter_haptics`.
+/// Base class for all errors thrown by `haptic_kit`.
 sealed class VibrationException implements Exception {
   const VibrationException(this.message);
 

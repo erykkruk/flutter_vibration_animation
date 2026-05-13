@@ -1,6 +1,6 @@
-# flutter_haptics
+# haptic_kit
 
-[![pub package](https://img.shields.io/pub/v/flutter_haptics.svg)](https://pub.dev/packages/flutter_haptics)
+[![pub package](https://img.shields.io/pub/v/haptic_kit.svg)](https://pub.dev/packages/haptic_kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Haptic feedback, vibration and animated UI widgets** for Flutter — full
@@ -9,9 +9,10 @@ custom Core Haptics patterns with intensity and sharpness curves, plus a
 set of production-ready widgets wired to the right haptic at the right
 moment.
 
-> Previously published as `flutter_vibration_animation`. The repository
-> URL is unchanged — only the package name and class identifiers were
-> updated for consistency with the actual surface.
+> Previously developed under the names `flutter_vibration_animation` and
+> `flutter_haptics`. The repository URL is unchanged — only the package
+> name and class identifiers were updated for consistency with the actual
+> surface and pub.dev naming rules.
 
 ---
 
@@ -57,7 +58,7 @@ moment.
 
 ```yaml
 dependencies:
-  flutter_haptics: ^0.1.1
+  haptic_kit: ^0.1.2
 ```
 
 ### Android
@@ -72,7 +73,7 @@ the podspec. Minimum deployment target: iOS 12.0.
 ## Quick start
 
 ```dart
-import 'package:flutter_haptics/flutter_haptics.dart';
+import 'package:haptic_kit/haptic_kit.dart';
 
 // Short UI taps
 await Haptics.impact(HapticImpactStyle.medium);
@@ -301,7 +302,7 @@ a new one, follow this pattern:
 5. **Pick the right haptic for the moment** — see the table below.
 6. **Cancel cleanly**: stop the controller, reset cursors, snap value
    back to zero. Atomic, in one method.
-7. **Export from the barrel** in `lib/flutter_haptics.dart`.
+7. **Export from the barrel** in `lib/haptic_kit.dart`.
 8. **Write a widget test** — see `test/widgets_test.dart` for the
    pattern (mock the channel with `messenger.setMockMethodCallHandler`).
 

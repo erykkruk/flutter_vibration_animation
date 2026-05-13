@@ -1,5 +1,5 @@
-name: flutter_haptics_example
-description: Demo app for flutter_haptics.
+name: haptic_kit_example
+description: Demo app for haptic_kit.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_haptics:
+  haptic_kit:
     path: ../
 
 dev_dependencies:

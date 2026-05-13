@@ -6,10 +6,10 @@ import 'exceptions.dart';
 ///
 /// Not exported from the package barrel — consumer code should use
 /// [Haptics], [Vibration], [HapticPattern] etc. instead.
-class FlutterHapticsChannel {
-  FlutterHapticsChannel._();
+class HapticKitChannel {
+  HapticKitChannel._();
 
-  static const String channelName = 'dev.erykkruk/flutter_haptics';
+  static const String channelName = 'dev.erykkruk/haptic_kit';
   static const MethodChannel _channel = MethodChannel(channelName);
 
   /// Invoke a method on the native plugin and translate any platform error

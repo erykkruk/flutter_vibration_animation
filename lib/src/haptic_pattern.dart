@@ -140,7 +140,7 @@ class HapticPattern {
         'pattern has no events — add at least one tap or continuous event',
       );
     }
-    return FlutterHapticsChannel.invoke<void>('pattern.play', {
+    return HapticKitChannel.invoke<void>('pattern.play', {
       'events': _events.map((e) => e.toMap()).toList(),
     });
   }

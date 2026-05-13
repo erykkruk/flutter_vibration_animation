@@ -1,16 +1,16 @@
 import Flutter
 import UIKit
 
-public class FlutterHapticsPlugin: NSObject, FlutterPlugin {
+public class HapticKitPlugin: NSObject, FlutterPlugin {
 
-    private static let channelName = "dev.erykkruk/flutter_haptics"
+    private static let channelName = "dev.erykkruk/haptic_kit"
 
     private let hapticHandler = HapticFeedbackHandler()
     private let coreHaptics = CoreHapticsHandler()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: channelName, binaryMessenger: registrar.messenger())
-        let instance = FlutterHapticsPlugin()
+        let instance = HapticKitPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 

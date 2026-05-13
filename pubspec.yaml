@@ -1,9 +1,9 @@
-name: flutter_haptics
+name: haptic_kit
 description: >-
   Haptic feedback, vibration and animated UI widgets for Flutter — Android &
   iOS. Impact, notification, selection, predefined effects, custom waveforms,
   Core Haptics patterns plus 8 production-ready widgets.
-version: 0.1.1
+version: 0.1.2
 
 homepage: https://github.com/erykkruk/flutter_vibration_animation
 repository: https://github.com/erykkruk/flutter_vibration_animation
@@ -33,7 +33,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: dev.erykkruk.flutter_haptics
-        pluginClass: FlutterHapticsPlugin
+        package: dev.erykkruk.haptic_kit
+        pluginClass: HapticKitPlugin
       ios:
-        pluginClass: FlutterHapticsPlugin
+        pluginClass: HapticKitPlugin

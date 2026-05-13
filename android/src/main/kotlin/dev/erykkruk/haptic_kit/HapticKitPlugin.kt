@@ -1,14 +1,14 @@
-package dev.erykkruk.flutter_haptics
+package dev.erykkruk.haptic_kit
 
 import android.content.Context
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class FlutterHapticsPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
+class HapticKitPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     private companion object {
-        const val CHANNEL_NAME = "dev.erykkruk/flutter_haptics"
+        const val CHANNEL_NAME = "dev.erykkruk/haptic_kit"
     }
 
     private lateinit var channel: MethodChannel

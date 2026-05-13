@@ -1,4 +1,4 @@
-package dev.erykkruk.flutter_haptics
+package dev.erykkruk.haptic_kit
 
 /**
  * Translates Dart-side `HapticImpactStyle` / `HapticNotificationStyle` enum
