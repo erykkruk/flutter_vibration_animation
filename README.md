@@ -58,7 +58,7 @@ moment.
 
 ```yaml
 dependencies:
-  haptic_kit: ^0.1.2
+  haptic_kit: ^1.0.0
 ```
 
 ### Android
