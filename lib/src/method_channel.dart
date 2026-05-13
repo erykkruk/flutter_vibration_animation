@@ -5,11 +5,11 @@ import 'exceptions.dart';
 /// Internal: shared [MethodChannel] for all calls to the native side.
 ///
 /// Not exported from the package barrel — consumer code should use
-/// [HapticFeedback], [Vibration], [HapticPattern] etc. instead.
-class FlutterVibrationAnimationChannel {
-  FlutterVibrationAnimationChannel._();
+/// [Haptics], [Vibration], [HapticPattern] etc. instead.
+class FlutterHapticsChannel {
+  FlutterHapticsChannel._();
 
-  static const String channelName = 'dev.erykkruk/flutter_vibration_animation';
+  static const String channelName = 'dev.erykkruk/flutter_haptics';
   static const MethodChannel _channel = MethodChannel(channelName);
 
   /// Invoke a method on the native plugin and translate any platform error

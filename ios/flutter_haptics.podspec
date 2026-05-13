@@ -1,11 +1,13 @@
 Pod::Spec.new do |s|
-  s.name             = 'flutter_vibration_animation'
-  s.version          = '0.1.0'
-  s.summary          = 'Comprehensive vibration and haptic feedback for Flutter — Android & iOS.'
+  s.name             = 'flutter_haptics'
+  s.version          = '0.1.1'
+  s.summary          = 'Haptic feedback, vibration and animated UI widgets for Flutter — Android & iOS.'
   s.description      = <<-DESC
-Vibration and haptic feedback for Flutter with full Android and iOS implementations.
-Supports impact / notification / selection feedback, predefined OS effects,
-custom waveforms, Core Haptics intensity-and-sharpness patterns, and capability detection.
+Haptic feedback and vibration toolkit for Flutter with full Android and iOS implementations
+plus a set of production-ready animated widgets. Supports impact / notification / selection
+feedback, predefined OS effects, custom waveforms, Core Haptics intensity-and-sharpness
+patterns, capability detection, and 8 animated UI widgets wired to the right haptic at the
+right moment.
                        DESC
   s.homepage         = 'https://github.com/erykkruk/flutter_vibration_animation'
   s.license          = { :type => 'MIT', :file => '../LICENSE' }

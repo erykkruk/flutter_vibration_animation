@@ -1,11 +1,17 @@
-# flutter_vibration_animation
+# flutter_haptics
 
-[![pub package](https://img.shields.io/pub/v/flutter_vibration_animation.svg)](https://pub.dev/packages/flutter_vibration_animation)
+[![pub package](https://img.shields.io/pub/v/flutter_haptics.svg)](https://pub.dev/packages/flutter_haptics)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Comprehensive **vibration and haptic feedback** for Flutter — full Android & iOS
-implementations covering everything from quick UI taps to custom Core Haptics
-patterns with intensity and sharpness curves.
+**Haptic feedback, vibration and animated UI widgets** for Flutter — full
+Android & iOS implementations covering everything from quick UI taps to
+custom Core Haptics patterns with intensity and sharpness curves, plus a
+set of production-ready widgets wired to the right haptic at the right
+moment.
+
+> Previously published as `flutter_vibration_animation`. The repository
+> URL is unchanged — only the package name and class identifiers were
+> updated for consistency with the actual surface.
 
 ---
 
@@ -16,6 +22,7 @@ patterns with intensity and sharpness curves.
   - Notification: `success`, `warning`, `error`
   - Selection (for pickers, sliders, segmented controls)
   - `prepare()` to pre-warm generators on iOS for lowest latency
+    (returns `true` on iOS, `false` no-op on Android)
 - **`Vibration`** — longer-form vibrations
   - One-shot vibration with optional amplitude
   - Custom waveforms with per-segment amplitudes
@@ -50,7 +57,7 @@ patterns with intensity and sharpness curves.
 
 ```yaml
 dependencies:
-  flutter_vibration_animation: ^0.1.0
+  flutter_haptics: ^0.1.1
 ```
 
 ### Android
@@ -65,7 +72,7 @@ the podspec. Minimum deployment target: iOS 12.0.
 ## Quick start
 
 ```dart
-import 'package:flutter_vibration_animation/flutter_vibration_animation.dart';
+import 'package:flutter_haptics/flutter_haptics.dart';
 
 // Short UI taps
 await Haptics.impact(HapticImpactStyle.medium);
@@ -158,6 +165,10 @@ The scale follows a 3-segment `TweenSequence` with weights 1 : 2 : 3:
 3. **settle** — `1.12 → 1.0`, `elasticOut`
 
 Set `bounceOnRelease: false` for a plain symmetric press with no overshoot.
+
+`pressedScale` must be in `(0, 1)` and `overshootScale` must be `>= 1.0`
+— violations throw `ArgumentError` at construction time, both in debug
+and release.
 
 ### `PressAndHoldToConfirm` — long-press with progress ring
 
@@ -290,7 +301,7 @@ a new one, follow this pattern:
 5. **Pick the right haptic for the moment** — see the table below.
 6. **Cancel cleanly**: stop the controller, reset cursors, snap value
    back to zero. Atomic, in one method.
-7. **Export from the barrel** in `lib/flutter_vibration_animation.dart`.
+7. **Export from the barrel** in `lib/flutter_haptics.dart`.
 8. **Write a widget test** — see `test/widgets_test.dart` for the
    pattern (mock the channel with `messenger.setMockMethodCallHandler`).
 

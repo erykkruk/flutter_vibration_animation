@@ -1,4 +1,4 @@
-# flutter_vibration_animation
+# flutter_haptics
 
 ## Overview
 
@@ -29,9 +29,9 @@ cd example && flutter run  # Run demo
 ## Directory Structure
 
 ```
-flutter_vibration_animation/
+flutter_haptics/
 ├── lib/
-│   ├── flutter_vibration_animation.dart   # Barrel — public API
+│   ├── flutter_haptics.dart   # Barrel — public API
 │   └── src/
 │       ├── exceptions.dart                # Typed exceptions
 │       ├── haptic_capabilities.dart       # Runtime detection
@@ -45,14 +45,14 @@ flutter_vibration_animation/
 │   ├── build.gradle
 │   └── src/main/
 │       ├── AndroidManifest.xml            # VIBRATE permission
-│       └── kotlin/dev/erykkruk/flutter_vibration_animation/
-│           ├── FlutterVibrationAnimationPlugin.kt
+│       └── kotlin/dev/erykkruk/flutter_haptics/
+│           ├── FlutterHapticsPlugin.kt
 │           ├── HapticFeedbackHandler.kt
 │           └── VibrationManager.kt
 ├── ios/
-│   ├── flutter_vibration_animation.podspec
+│   ├── flutter_haptics.podspec
 │   └── Classes/
-│       ├── FlutterVibrationAnimationPlugin.swift
+│       ├── FlutterHapticsPlugin.swift
 │       ├── HapticFeedbackHandler.swift   # UIFeedbackGenerator wrapper
 │       └── CoreHapticsHandler.swift      # CHHapticEngine wrapper
 ├── test/
@@ -68,7 +68,7 @@ flutter_vibration_animation/
 **Method Channel Plugin** (no FFI):
 
 1. Dart wraps each domain (`HapticFeedback`, `Vibration`, `HapticPattern`) as
-   a static class calling `FlutterVibrationAnimationChannel.invoke`.
+   a static class calling `FlutterHapticsChannel.invoke`.
 2. `method_channel.dart` is a private singleton that translates
    `PlatformException` → typed `VibrationException` subclasses.
 3. Native side dispatches by method name and uses small handler classes:
@@ -79,7 +79,7 @@ flutter_vibration_animation/
 
 ### Channel name
 
-`dev.erykkruk/flutter_vibration_animation` — used by both sides.
+`dev.erykkruk/flutter_haptics` — used by both sides.
 
 ### Method names
 
@@ -126,7 +126,7 @@ Native errors map by code:
 ### NIGDY
 
 1. Bezpośrednie wywołania `MethodChannel` w API publicznym — zawsze przez
-   `FlutterVibrationAnimationChannel.invoke` (uniformizuje obsługę błędów).
+   `FlutterHapticsChannel.invoke` (uniformizuje obsługę błędów).
 2. Surowe `throw Exception(…)` — zawsze typed `VibrationException`.
 3. Mutable global state w warstwie Dart — pluginy są singleton po stronie
    native, ale Dart API jest stateless (tylko `HapticPattern.builder` ma
@@ -155,12 +155,12 @@ Native errors map by code:
 ## New Feature Checklist
 
 1. [ ] Zaprojektuj API w Dart (klasa + doc comments + przykład)
-2. [ ] Dodaj method handler w `FlutterVibrationAnimationPlugin.kt`
+2. [ ] Dodaj method handler w `FlutterHapticsPlugin.kt`
 3. [ ] Zaimplementuj logikę w odpowiednim handlerze (Android)
-4. [ ] Dodaj method handler w `FlutterVibrationAnimationPlugin.swift`
+4. [ ] Dodaj method handler w `FlutterHapticsPlugin.swift`
 5. [ ] Zaimplementuj logikę w odpowiednim handlerze (iOS) z fallbackiem
 6. [ ] Zaktualizuj `HapticCapabilities` jeśli to nowa zdolność
-7. [ ] Eksport w `flutter_vibration_animation.dart`
+7. [ ] Eksport w `flutter_haptics.dart`
 8. [ ] Test mockujący `MethodChannel`
 9. [ ] Demo w `example/lib/main.dart`
 10. [ ] Update README + CHANGELOG

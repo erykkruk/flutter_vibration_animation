@@ -122,6 +122,20 @@ class _HapticBounceState extends State<HapticBounce>
   }
 
   void _rebuildSequence() {
+    if (widget.pressedScale <= 0 || widget.pressedScale >= 1.0) {
+      throw ArgumentError.value(
+        widget.pressedScale,
+        'pressedScale',
+        'must be in (0, 1)',
+      );
+    }
+    if (widget.overshootScale < 1.0) {
+      throw ArgumentError.value(
+        widget.overshootScale,
+        'overshootScale',
+        'must be >= 1.0',
+      );
+    }
     if (widget.bounceOnRelease) {
       _scale = TweenSequence<double>([
         TweenSequenceItem(

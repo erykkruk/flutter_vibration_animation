@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-05-13
+
+### Changed
+- **Package renamed** from `flutter_vibration_animation` to `flutter_haptics`
+  to match the actual surface (`Haptics`, `HapticPattern`, `HapticBounce`,
+  …) and to surface the library to users searching for haptic feedback
+  rather than vibration animations. The GitHub repository keeps its
+  original URL.
+- Method channel renamed from `dev.erykkruk/flutter_vibration_animation`
+  to `dev.erykkruk/flutter_haptics`. Android package and plugin class
+  renamed accordingly (`dev.erykkruk.flutter_haptics.FlutterHapticsPlugin`).
+  iOS podspec and plugin class renamed (`FlutterHapticsPlugin`).
+- `Haptics.prepare()` now returns `Future<bool>` instead of `Future<void>`
+  — `true` when the platform actually pre-warmed haptic generators (iOS),
+  `false` when the call is a no-op on the current platform (Android).
+- `HapticBounce` now validates `pressedScale` (must be in `(0, 1)`) and
+  `overshootScale` (must be `>= 1.0`) at runtime, not only in debug. Bad
+  values now throw `ArgumentError` instead of silently producing
+  inverted scales in release builds.
+- Dropped the deprecated `library flutter_vibration_animation;` directive
+  from the barrel — modern Dart no longer requires it.
+- Barrel-level doc comment now lists all 8 animated widgets, making them
+  discoverable via IDE autocompletion on the `flutter_haptics` import.
+- Pub.dev topics updated: `haptics`, `vibration`, `haptic-feedback`,
+  `animation`, `widgets`.
+
+### Added
+- Boundary-condition tests for `InvalidVibrationArgumentException`:
+  negative duration, amplitude below `kMinAmplitude`, amplitude above
+  `kMaxAmplitude`, amplitude at the upper boundary, empty timings,
+  negative waveform amplitude, out-of-range `repeat` index.
+- Tests covering the new `Haptics.prepare()` return value for both
+  platform paths (iOS true / Android false).
+- Test covering the `invalid_argument` platform error code mapping to
+  `InvalidVibrationArgumentException`.
+
 ## [0.1.0] - 2026-04-30
 
 ### Added

@@ -1,4 +1,4 @@
-package dev.erykkruk.flutter_vibration_animation
+package dev.erykkruk.flutter_haptics
 
 import android.content.Context
 import android.os.Build

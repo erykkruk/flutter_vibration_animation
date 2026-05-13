@@ -1,16 +1,16 @@
 import Flutter
 import UIKit
 
-public class FlutterVibrationAnimationPlugin: NSObject, FlutterPlugin {
+public class FlutterHapticsPlugin: NSObject, FlutterPlugin {
 
-    private static let channelName = "dev.erykkruk/flutter_vibration_animation"
+    private static let channelName = "dev.erykkruk/flutter_haptics"
 
     private let hapticHandler = HapticFeedbackHandler()
     private let coreHaptics = CoreHapticsHandler()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: channelName, binaryMessenger: registrar.messenger())
-        let instance = FlutterVibrationAnimationPlugin()
+        let instance = FlutterHapticsPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
@@ -33,7 +33,8 @@ public class FlutterVibrationAnimationPlugin: NSObject, FlutterPlugin {
 
             case "haptic.prepare":
                 hapticHandler.prepare()
-                result(nil)
+                // iOS actually pre-warmed the generators — let Dart know.
+                result(true)
 
             case "vibration.oneShot":
                 let durationMs = try requireInt(call, "durationMs")

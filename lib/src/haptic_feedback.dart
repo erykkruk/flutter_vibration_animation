@@ -62,7 +62,7 @@ class Haptics {
   static Future<void> impact(
     HapticImpactStyle style,
   ) =>
-      FlutterVibrationAnimationChannel.invoke<void>('haptic.impact', {
+      FlutterHapticsChannel.invoke<void>('haptic.impact', {
         'style': style.name,
       });
 
@@ -70,20 +70,23 @@ class Haptics {
   static Future<void> notification(
     HapticNotificationStyle style,
   ) =>
-      FlutterVibrationAnimationChannel.invoke<void>('haptic.notification', {
+      FlutterHapticsChannel.invoke<void>('haptic.notification', {
         'style': style.name,
       });
 
   /// Trigger a selection-changed tap. Use when scrolling through discrete
   /// values (pickers, sliders, segmented controls).
   static Future<void> selection() =>
-      FlutterVibrationAnimationChannel.invoke<void>('haptic.selection');
+      FlutterHapticsChannel.invoke<void>('haptic.selection');
 
   /// Pre-warm haptic generators so the next call has the lowest possible
   /// latency. Optional — calling [impact] / [notification] / [selection]
   /// directly works fine.
   ///
-  /// Ignored on Android (no equivalent API).
-  static Future<void> prepare() =>
-      FlutterVibrationAnimationChannel.invoke<void>('haptic.prepare');
+  /// Returns `true` when the platform actually pre-warmed something (iOS),
+  /// and `false` when the call is a no-op on this platform (Android).
+  static Future<bool> prepare() async {
+    final result = await FlutterHapticsChannel.invoke<bool>('haptic.prepare');
+    return result ?? false;
+  }
 }

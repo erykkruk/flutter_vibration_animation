@@ -1,14 +1,14 @@
-package dev.erykkruk.flutter_vibration_animation
+package dev.erykkruk.flutter_haptics
 
 import android.content.Context
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class FlutterVibrationAnimationPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
+class FlutterHapticsPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     private companion object {
-        const val CHANNEL_NAME = "dev.erykkruk/flutter_vibration_animation"
+        const val CHANNEL_NAME = "dev.erykkruk/flutter_haptics"
     }
 
     private lateinit var channel: MethodChannel
@@ -50,7 +50,8 @@ class FlutterVibrationAnimationPlugin : FlutterPlugin, MethodChannel.MethodCallH
                 }
                 "haptic.prepare" -> {
                     // No-op on Android — UIFeedbackGenerator has no equivalent.
-                    result.success(null)
+                    // Returns false to let Dart side know the platform didn't pre-warm.
+                    result.success(false)
                 }
                 "vibration.oneShot" -> {
                     val durationMs = call.argument<Int>("durationMs")?.toLong()

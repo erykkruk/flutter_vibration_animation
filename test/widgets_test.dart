@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_vibration_animation/flutter_vibration_animation.dart';
+import 'package:flutter_haptics/flutter_haptics.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const channel = MethodChannel('dev.erykkruk/flutter_vibration_animation');
+  const channel = MethodChannel('dev.erykkruk/flutter_haptics');
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 

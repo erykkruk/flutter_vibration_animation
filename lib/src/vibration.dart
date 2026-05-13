@@ -38,7 +38,7 @@ class Vibration {
         'amplitude must be in [$kMinAmplitude, $kMaxAmplitude]',
       );
     }
-    return FlutterVibrationAnimationChannel.invoke<void>('vibration.oneShot', {
+    return FlutterHapticsChannel.invoke<void>('vibration.oneShot', {
       'durationMs': duration.inMilliseconds,
       if (amplitude != null) 'amplitude': amplitude,
     });
@@ -85,7 +85,7 @@ class Vibration {
         'repeat must be -1 or a valid index in timings',
       );
     }
-    return FlutterVibrationAnimationChannel.invoke<void>('vibration.waveform', {
+    return FlutterHapticsChannel.invoke<void>('vibration.waveform', {
       'timingsMs': timings.map((d) => d.inMilliseconds).toList(),
       if (amplitudes != null) 'amplitudes': amplitudes,
       'repeat': repeat,
@@ -98,11 +98,11 @@ class Vibration {
   /// older Android and on iOS the call is translated to the closest
   /// equivalent on `Haptics` / [vibrate].
   static Future<void> playPredefined(PredefinedEffect effect) =>
-      FlutterVibrationAnimationChannel.invoke<void>('vibration.predefined', {
+      FlutterHapticsChannel.invoke<void>('vibration.predefined', {
         'effect': effect.name,
       });
 
   /// Stop any vibration started by this plugin.
   static Future<void> cancel() =>
-      FlutterVibrationAnimationChannel.invoke<void>('vibration.cancel');
+      FlutterHapticsChannel.invoke<void>('vibration.cancel');
 }

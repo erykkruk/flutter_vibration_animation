@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vibration_animation/flutter_vibration_animation.dart';
+import 'package:flutter_haptics/flutter_haptics.dart';
 
 void main() => runApp(const VibrationDemoApp());
 
@@ -30,7 +30,7 @@ class VibrationDemoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('flutter_vibration_animation'),
+        title: const Text('flutter_haptics'),
         centerTitle: true,
       ),
       body: ListView(

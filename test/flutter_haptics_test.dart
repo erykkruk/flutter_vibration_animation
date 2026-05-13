@@ -1,11 +1,11 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_vibration_animation/flutter_vibration_animation.dart';
+import 'package:flutter_haptics/flutter_haptics.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const channel = MethodChannel('dev.erykkruk/flutter_vibration_animation');
+  const channel = MethodChannel('dev.erykkruk/flutter_haptics');
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
@@ -175,6 +175,101 @@ void main() {
         () => Haptics.selection(),
         throwsA(isA<PlatformVibrationException>()),
       );
+    });
+
+    test('platform invalid_argument maps to InvalidVibrationArgumentException',
+        () async {
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        throw PlatformException(code: 'invalid_argument', message: 'bad arg');
+      });
+      expect(
+        () => Haptics.selection(),
+        throwsA(isA<InvalidVibrationArgumentException>()),
+      );
+    });
+  });
+
+  group('argument validation boundaries', () {
+    test('vibrate rejects negative duration', () {
+      expect(
+        () => Vibration.vibrate(
+          duration: const Duration(milliseconds: -1),
+        ),
+        throwsA(isA<InvalidVibrationArgumentException>()),
+      );
+    });
+
+    test('vibrate rejects amplitude below kMinAmplitude', () {
+      expect(
+        () => Vibration.vibrate(
+          duration: const Duration(milliseconds: 100),
+          amplitude: 0,
+        ),
+        throwsA(isA<InvalidVibrationArgumentException>()),
+      );
+    });
+
+    test('vibrate rejects amplitude above kMaxAmplitude', () {
+      expect(
+        () => Vibration.vibrate(
+          duration: const Duration(milliseconds: 100),
+          amplitude: kMaxAmplitude + 1,
+        ),
+        throwsA(isA<InvalidVibrationArgumentException>()),
+      );
+    });
+
+    test('vibrate accepts amplitude at the upper boundary', () async {
+      await Vibration.vibrate(
+        duration: const Duration(milliseconds: 100),
+        amplitude: kMaxAmplitude,
+      );
+      expect(calls.single.arguments, {'durationMs': 100, 'amplitude': 255});
+    });
+
+    test('vibrateWaveform rejects empty timings', () {
+      expect(
+        () => Vibration.vibrateWaveform(timings: const []),
+        throwsA(isA<InvalidVibrationArgumentException>()),
+      );
+    });
+
+    test('vibrateWaveform rejects negative amplitude', () {
+      expect(
+        () => Vibration.vibrateWaveform(
+          timings: const [Duration(milliseconds: 50)],
+          amplitudes: const [-1],
+        ),
+        throwsA(isA<InvalidVibrationArgumentException>()),
+      );
+    });
+
+    test('vibrateWaveform rejects out-of-range repeat index', () {
+      expect(
+        () => Vibration.vibrateWaveform(
+          timings: const [Duration(milliseconds: 50)],
+          repeat: 5,
+        ),
+        throwsA(isA<InvalidVibrationArgumentException>()),
+      );
+    });
+  });
+
+  group('Haptics.prepare', () {
+    test('returns true when native side pre-warmed (iOS)', () async {
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'haptic.prepare') return true;
+        return null;
+      });
+      expect(await Haptics.prepare(), isTrue);
+    });
+
+    test('returns false when native side is no-op (Android)', () async {
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'haptic.prepare') return false;
+        return null;
+      });
+      expect(await Haptics.prepare(), isFalse);
     });
   });
 }
