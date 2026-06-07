@@ -57,6 +57,13 @@ class VibrationPatterns {
         amplitude: 80,
       );
 
+  /// Two quick, equal taps — e.g. a double-tap acknowledgement.
+  static Future<void> doubleTap() => HapticPattern.builder()
+      .tap(intensity: 0.8, sharpness: 0.7)
+      .pause(const Duration(milliseconds: 90))
+      .tap(intensity: 0.8, sharpness: 0.7)
+      .play();
+
   /// Confirmation: light tap → strong tap.
   static Future<void> success() => HapticPattern.builder()
       .tap(intensity: 0.5, sharpness: 0.5)
