@@ -13,7 +13,7 @@ right moment.
   s.license          = { :type => 'MIT', :file => '../LICENSE' }
   s.author           = { 'Eryk Kruk' => 'eryk.kruk@codigee.com' }
   s.source           = { :http => 'https://github.com/erykkruk/flutter_vibration_animation' }
-  s.source_files     = 'Classes/**/*'
+  s.source_files     = 'haptic_kit/Sources/haptic_kit/**/*.swift'
   s.dependency 'Flutter'
   s.platform         = :ios, '12.0'
   s.swift_version    = '5.0'
