@@ -14,6 +14,8 @@ ios/Pods/
 ios/.symlinks/
 ios/Flutter/Flutter.framework
 ios/Flutter/Flutter.podspec
+ios/haptic_kit/.build/
+ios/haptic_kit/.swiftpm/
 
 # Android
 android/.gradle/
