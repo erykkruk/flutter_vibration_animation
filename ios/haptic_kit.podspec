@@ -15,7 +15,7 @@ right moment.
   s.source           = { :http => 'https://github.com/erykkruk/flutter_vibration_animation' }
   s.source_files     = 'haptic_kit/Sources/haptic_kit/**/*.swift'
   s.dependency 'Flutter'
-  s.platform         = :ios, '12.0'
+  s.platform         = :ios, '15.0'
   s.swift_version    = '5.0'
 
   s.frameworks = 'UIKit', 'CoreHaptics', 'AudioToolbox'

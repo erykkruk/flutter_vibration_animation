@@ -6,20 +6,14 @@ import PackageDescription
 let package = Package(
     name: "haptic_kit",
     platforms: [
-        .iOS("13.0"),
+        .iOS("15.0"),
     ],
     products: [
         .library(name: "haptic-kit", targets: ["haptic_kit"]),
     ],
-    dependencies: [
-        .package(name: "FlutterFramework", path: "../FlutterFramework"),
-    ],
     targets: [
         .target(
             name: "haptic_kit",
-            dependencies: [
-                .product(name: "FlutterFramework", package: "FlutterFramework"),
-            ],
             resources: []
         ),
     ]

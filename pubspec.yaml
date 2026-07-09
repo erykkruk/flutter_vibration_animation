@@ -37,3 +37,4 @@ flutter:
         pluginClass: HapticKitPlugin
       ios:
         pluginClass: HapticKitPlugin
+        sharedDarwinSource: true
