@@ -5,13 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.2] - 2026-07-09
+## [2.0.0] - 2026-07-09
 
 ### Added
-- **Swift Package Manager support** — added `ios/haptic_kit/Package.swift` and
-  a `Sources/haptic_kit/` directory with symbolic links to the existing Swift
-  sources. Flutter 3.44+ projects can now resolve this plugin via SPM; CocoaPods
-  continues to work unchanged.
+- **Swift Package Manager support** — added `ios/haptic_kit/Package.swift` and a
+  `ios/haptic_kit/Sources/haptic_kit/` directory holding the plugin's Swift
+  sources (moved from `ios/Classes/`). Flutter 3.44+ projects can now resolve
+  this plugin via SPM; CocoaPods continues to work unchanged.
+
+### Changed
+- **BREAKING: minimum iOS deployment target raised from 12.0 to 15.0.** Apps
+  targeting iOS 12–14 must either stay on `1.x` or raise their own deployment
+  target. The plugin's runtime APIs are still guarded for iOS 13.0+ (Core
+  Haptics), but the SPM tooling and example require iOS 15.0.
+- Moved iOS sources from `ios/Classes/` to `ios/haptic_kit/Sources/haptic_kit/`
+  and updated the podspec `source_files` accordingly.
+
+### Migration
+- Ensure your iOS app's `IPHONEOS_DEPLOYMENT_TARGET` (and Podfile `platform`) is
+  `15.0` or higher before upgrading to `2.0.0`.
 
 ## [1.0.1] - 2026-06-07
 
