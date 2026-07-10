@@ -16,6 +16,19 @@ moment.
 
 ---
 
+## Documentation
+
+Full hosted documentation lives on the Codigee open-source site:
+
+- **[Overview](https://codigee.com/open-source/haptic-kit)** — what the package
+  is, installation and quick start.
+- **[Animated widgets](https://codigee.com/open-source/haptic-kit/widgets)** —
+  the drop-in widget catalog (`HapticBounce`, `PressAndHoldToConfirm`, …).
+- **[Patterns & haptics API](https://codigee.com/open-source/haptic-kit/patterns)**
+  — `Haptics`, `Vibration`, `HapticPattern` and `VibrationPatterns`.
+
+---
+
 ## Features
 
 - **`Haptics`** — short, semantic taps (named `Haptics` to avoid clashing with Flutter's own `HapticFeedback`)
