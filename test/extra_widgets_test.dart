@@ -137,6 +137,100 @@ void main() {
     });
   });
 
+  group('HapticPulse', () {
+    testWidgets('renders the child', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const HapticPulse(
+            autoPlay: false,
+            child: Text('badge'),
+          ),
+        ),
+      );
+      expect(find.text('badge'), findsOneWidget);
+    });
+
+    testWidgets('autoPlay pulses and ticks on each beat', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const HapticPulse(
+            period: Duration(milliseconds: 100),
+            child: SizedBox(width: 40, height: 40),
+          ),
+        ),
+      );
+      // Post-frame callback starts the first beat.
+      await tester.pump();
+      // Drive two full beats.
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(
+        hapticCalls.where((c) => c == 'haptic.impact').length,
+        greaterThanOrEqualTo(1),
+      );
+    });
+
+    testWidgets('start()/stop() control pulsing', (tester) async {
+      final key = GlobalKey<HapticPulseState>();
+      await tester.pumpWidget(
+        wrap(
+          HapticPulse(
+            key: key,
+            autoPlay: false,
+            period: const Duration(milliseconds: 100),
+            child: const SizedBox(width: 40, height: 40),
+          ),
+        ),
+      );
+      expect(key.currentState!.isPulsing, isFalse);
+
+      key.currentState!.start();
+      await tester.pump();
+      expect(key.currentState!.isPulsing, isTrue);
+      expect(hapticCalls, contains('haptic.impact'));
+
+      key.currentState!.stop();
+      await tester.pump();
+      expect(key.currentState!.isPulsing, isFalse);
+    });
+
+    testWidgets('stops after pulseCount beats', (tester) async {
+      final key = GlobalKey<HapticPulseState>();
+      await tester.pumpWidget(
+        wrap(
+          HapticPulse(
+            key: key,
+            pulseCount: 2,
+            period: const Duration(milliseconds: 100),
+            child: const SizedBox(width: 40, height: 40),
+          ),
+        ),
+      );
+      // Let it run past two beats; a finite pulse settles on its own.
+      await tester.pumpAndSettle();
+      expect(key.currentState!.isPulsing, isFalse);
+      expect(
+        hapticCalls.where((c) => c == 'haptic.impact').length,
+        2,
+      );
+    });
+
+    testWidgets('haptics:false pulses silently', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const HapticPulse(
+            pulseCount: 2,
+            haptics: false,
+            period: Duration(milliseconds: 100),
+            child: SizedBox(width: 40, height: 40),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(hapticCalls, isEmpty);
+    });
+  });
+
   group('SlideToConfirm', () {
     testWidgets('fires onConfirmed when dragged to end', (tester) async {
       var confirmed = 0;

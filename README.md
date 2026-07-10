@@ -139,6 +139,7 @@ self-contained file in `lib/src/widgets/` — read one, copy the pattern.
 | `HapticSlider` | Slider with detent ticks | Detect detent crossings via `lastIndex` cache |
 | `HapticStepper` | −/+ counter with bouncing buttons | Composes `HapticBounce` + `AnimatedSwitcher` |
 | `HapticShake` | Wiggle + error notification | Externally triggered via `GlobalKey<State>.shake()` |
+| [`HapticPulse`](#hapticpulse--looping-attention-pulse) | Looping breathing pulse + tick per beat | Auto-playing controller, `start()`/`stop()` via `GlobalKey<State>` |
 | `SlideToConfirm` | Drag handle to end to confirm | Drag-driven controller with snap-back |
 | `HapticRating` | Tap a star → cascading fill + tick per star | Sequenced `Timer.periodic` |
 
@@ -251,6 +252,41 @@ HapticShake(key: shakeKey, child: TextField(/* ... */));
 // On validation failure:
 shakeKey.currentState?.shake();
 ```
+
+### `HapticPulse` — looping attention pulse
+
+The breathing counterpart to `HapticShake`: a looping `minScale → maxScale`
+pulse that fires a light impact on every beat. Use it to draw the eye to a
+CTA, an unread badge or a recording dot. It starts pulsing on mount by
+default:
+
+```dart
+HapticPulse(
+  child: const Icon(Icons.notifications),
+)
+```
+
+For manual control, set `autoPlay: false` and drive it via a `GlobalKey`:
+
+```dart
+final pulseKey = GlobalKey<HapticPulseState>();
+
+HapticPulse(
+  key: pulseKey,
+  autoPlay: false,
+  pulseCount: 3,          // stop after 3 beats; omit for an infinite pulse
+  impactStyle: HapticImpactStyle.medium,
+  child: const Icon(Icons.notifications),
+);
+
+pulseKey.currentState?.start();
+// ...later:
+pulseKey.currentState?.stop();
+```
+
+> An infinite pulse never settles — in widget tests, drive the clock with
+> `tester.pump(duration)` rather than `tester.pumpAndSettle()`, or pass a
+> finite `pulseCount`.
 
 ### `SlideToConfirm` — drag-to-confirm pill
 

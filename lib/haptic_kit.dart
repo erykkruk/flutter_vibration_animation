@@ -17,6 +17,7 @@
 /// * [HapticSlider] — slider that ticks each time a detent is crossed.
 /// * [HapticStepper] — −/+ counter with bouncing buttons.
 /// * [HapticShake] — externally-triggered error wiggle.
+/// * [HapticPulse] — looping "breathing" pulse that ticks on every beat.
 /// * [HapticRating] — star rating with cascading fill + ticks.
 /// * [PressAndHoldToConfirm] — long-press with progress ring + densifying
 ///   haptic schedule.
@@ -31,6 +32,7 @@ export 'src/predefined_effect.dart';
 export 'src/vibration.dart';
 export 'src/vibration_patterns.dart';
 export 'src/widgets/haptic_bounce.dart';
+export 'src/widgets/haptic_pulse.dart';
 export 'src/widgets/haptic_rating.dart';
 export 'src/widgets/haptic_shake.dart';
 export 'src/widgets/haptic_slider.dart';

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-07-10
+
+### Added
+- **`HapticPulse` widget** — a looping "breathing" scale pulse that fires a
+  haptic impact on every beat, the attention-getting counterpart to the
+  one-shot `HapticShake`. Auto-plays on mount (`autoPlay`), loops forever or
+  for a fixed number of beats (`pulseCount`), and exposes `start()` / `stop()`
+  / `isPulsing` via `GlobalKey<HapticPulseState>` for manual control.
+  Configurable `minScale`, `maxScale`, `period`, `impactStyle` and a
+  visual-only `haptics: false` mode. No new native code — composes the
+  existing `Haptics.impact` primitive.
+
 ## [2.0.0] - 2026-07-09
 
 ### Added
