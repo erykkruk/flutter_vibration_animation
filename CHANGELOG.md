@@ -1,3 +1,7 @@
+## 2.1.3
+
+- Maintenance release.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
