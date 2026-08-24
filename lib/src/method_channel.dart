@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 
 import 'exceptions.dart';
+import 'haptic_settings.dart';
 
 /// Internal: shared [MethodChannel] for all calls to the native side.
 ///
@@ -14,10 +15,20 @@ class HapticKitChannel {
 
   /// Invoke a method on the native plugin and translate any platform error
   /// into a typed [PlatformVibrationException].
+  ///
+  /// [playback] marks calls that actually make the device buzz. Those are
+  /// skipped entirely while [HapticSettings.enabled] is false, so a user who
+  /// turned haptics off costs no platform calls at all. Queries and
+  /// cancellation pass through either way: reading what the device supports,
+  /// or stopping something already running, is not playback.
   static Future<T?> invoke<T>(
     String method, [
     Map<String, dynamic>? arguments,
+    bool playback = true,
   ]) async {
+    if (playback && !HapticSettings.enabled) {
+      return null;
+    }
     try {
       return await _channel.invokeMethod<T>(method, arguments);
     } on PlatformException catch (e) {

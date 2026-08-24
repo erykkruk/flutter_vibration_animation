@@ -44,6 +44,8 @@ class HapticCapabilities {
   static Future<HapticCapabilities> query() async {
     final raw = await HapticKitChannel.invoke<Map<Object?, Object?>>(
       'capabilities.query',
+      null,
+      false,
     );
     final map = raw ?? const <Object?, Object?>{};
     return HapticCapabilities(
