@@ -1,3 +1,22 @@
+## 2.2.0
+
+- Added `HapticSettings`, an app-wide switch for every haptic in the package.
+  `HapticSettings.enabled = false` turns each `Haptics`, `Vibration`,
+  `VibrationPatterns` and widget call into a no-op without a check at the
+  call site. Disabled calls are skipped before the method channel, so an app
+  whose user turned haptics off makes no platform calls at all.
+- `Vibration.cancel()` and capability queries still reach the platform while
+  disabled: stopping something already running, or reading what the device
+  supports, is not playback.
+- Added `HapticSettings.capabilities`, a cached read of
+  `HapticCapabilities.query()`. A failed query is not cached, so a transient
+  error cannot pin an "unsupported" answer for the session.
+  `resetCapabilitiesCache()` clears it, `cachedCapabilities` exposes it
+  synchronously, and `HapticCapabilities.query()` still bypasses the cache.
+- Added `HapticSettings.isAvailable`, covering both the device's vibrator and
+  the app's own preference in one check.
+- Raised `flutter_lints` to `^6.0.0`.
+
 ## 2.1.3
 
 - Maintenance release.

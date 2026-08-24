@@ -28,6 +28,7 @@ export 'src/exceptions.dart';
 export 'src/haptic_capabilities.dart';
 export 'src/haptic_feedback.dart';
 export 'src/haptic_pattern.dart';
+export 'src/haptic_settings.dart';
 export 'src/predefined_effect.dart';
 export 'src/vibration.dart';
 export 'src/vibration_patterns.dart';

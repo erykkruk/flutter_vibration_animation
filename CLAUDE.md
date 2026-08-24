@@ -14,7 +14,7 @@ Flutter plugin z pełną implementacją wibracji i haptic feedback dla Android i
 | Android API | minSdk 21, compileSdk 34 | — |
 | iOS | Swift | 5.0 |
 | iOS deployment | iOS 12.0 | — |
-| Linting | flutter_lints | ^4.0.0 |
+| Linting | flutter_lints | ^6.0.0 |
 
 ## Development Commands
 
@@ -131,6 +131,11 @@ Native errors map by code:
 3. Mutable global state w warstwie Dart — pluginy są singleton po stronie
    native, ale Dart API jest stateless (tylko `HapticPattern.builder` ma
    stan i jest świeży per-instance).
+   **Jedyny świadomy wyjątek: `HapticSettings` (2.2.0)** — globalny
+   przełącznik haptics + cache capabilities. To z definicji preferencja
+   całej aplikacji, a `Haptics.impact()` jest statyczne i nie ma
+   `BuildContext`, więc InheritedWidget by nie pokrył wywołań spoza
+   drzewa widgetów. Nie rozszerzać tego wyjątku na kolejne API.
 4. Brak walidacji parametrów na granicy publicznego API.
 5. `print()` w library code.
 6. Hardcoded magic numbers — wszystkie progi / konwersje (255, 0.5, …) mają

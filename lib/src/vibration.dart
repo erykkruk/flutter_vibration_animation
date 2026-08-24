@@ -104,5 +104,5 @@ class Vibration {
 
   /// Stop any vibration started by this plugin.
   static Future<void> cancel() =>
-      HapticKitChannel.invoke<void>('vibration.cancel');
+      HapticKitChannel.invoke<void>('vibration.cancel', null, false);
 }

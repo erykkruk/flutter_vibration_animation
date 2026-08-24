@@ -369,7 +369,44 @@ a new one, follow this pattern:
 | Continuous waveform / heartbeat | `Vibration.vibrateWaveform(...)` | When duration matters more than crispness |
 | Custom intensity + sharpness curve | `HapticPattern.builder()...play()` | Core Haptics on iOS, amplitude on Android |
 
+## App-wide haptics switch
+
+Most apps ship a "Haptics" toggle in their settings, and then wrap every
+call in the same `if`. Flip it once instead:
+
+```dart
+HapticSettings.enabled = preferences.hapticsEnabled;
+
+// A no-op now, from anywhere, with no check at the call site
+await Haptics.impact(HapticImpactStyle.light);
+await VibrationPatterns.success();
+```
+
+While disabled, calls return normally and never reach the method channel, so
+an app whose user turned haptics off makes no platform calls at all.
+
+Two things deliberately keep working while disabled:
+
+- `Vibration.cancel()` - refusing to cancel would leave the device buzzing
+  after the user opted out.
+- capability queries - reading what a device supports is not playback.
+
+This is the app's own preference. It does not read the system-level haptic
+setting, which the platforms apply themselves underneath.
+
 ## Capability detection
+
+```dart
+// Cached: the platform is queried once, values cannot change at runtime
+final caps = await HapticSettings.capabilities;
+
+// Covers the device and the app preference in one check
+if (await HapticSettings.isAvailable) {
+  await VibrationPatterns.success();
+}
+```
+
+`HapticCapabilities.query()` remains available for a deliberately fresh read:
 
 ```dart
 final caps = await HapticCapabilities.query();
