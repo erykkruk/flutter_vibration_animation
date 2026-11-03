@@ -3,7 +3,7 @@ description: >-
   Haptic feedback, vibration and animated haptic widgets for Flutter on Android
   and iOS: impact, notification, selection, custom waveforms and Core Haptics
   patterns.
-version: 2.3.0
+version: 2.3.1
 
 homepage: https://github.com/erykkruk/flutter_vibration_animation
 repository: https://github.com/erykkruk/flutter_vibration_animation

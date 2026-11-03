@@ -8,6 +8,7 @@ internal final class CoreHapticsHandler {
 
     private var engine: CHHapticEngine?
     private var player: CHHapticAdvancedPatternPlayer?
+    private let engineRestart = EngineRestartTracker()
 
     private let supportsHaptics: Bool = {
         if #available(iOS 13.0, *) {
@@ -18,12 +19,18 @@ internal final class CoreHapticsHandler {
 
     @available(iOS 13.0, *)
     private func ensureEngine() throws -> CHHapticEngine {
-        if let existing = engine { return existing }
+        if let existing = engine {
+            try engineRestart.restartForPlay { try existing.start() }
+            return existing
+        }
         let new = try CHHapticEngine()
         new.resetHandler = { [weak self] in
-            try? self?.engine?.start()
+            guard let self = self else { return }
+            self.engineRestart.restartAfterReset { try self.engine?.start() }
         }
-        new.stoppedHandler = { _ in /* ignore — restart on next call */ }
+        new.stoppedHandler = { [weak self] _ in
+            self?.engineRestart.markNeedsStart()
+        }
         try new.start()
         engine = new
         return new
@@ -189,6 +196,9 @@ internal final class CoreHapticsHandler {
         } catch {
             // Engine failed — silently swallow rather than crashing the app.
             // Capability flags inform callers whether they can rely on it.
+            // Restart before the next play, so a failure caused by an engine
+            // stop that went unnoticed cannot silence haptics for good.
+            engineRestart.markNeedsStart()
         }
     }
 }
