@@ -8,9 +8,7 @@ internal final class CoreHapticsHandler {
 
     private var engine: CHHapticEngine?
     private var player: CHHapticAdvancedPatternPlayer?
-    /// Set by `stoppedHandler`: iOS stops the engine when the app is suspended,
-    /// on audio-session interrupts and on idle timeout. The next play restarts it.
-    private var engineNeedsStart = false
+    private let engineRestart = EngineRestartTracker()
 
     private let supportsHaptics: Bool = {
         if #available(iOS 13.0, *) {
@@ -22,33 +20,16 @@ internal final class CoreHapticsHandler {
     @available(iOS 13.0, *)
     private func ensureEngine() throws -> CHHapticEngine {
         if let existing = engine {
-            if engineNeedsStart {
-                // Cleared first: the handlers run off the main thread, so a
-                // stop arriving during start() must not be overwritten.
-                engineNeedsStart = false
-                do {
-                    try existing.start()
-                } catch {
-                    engineNeedsStart = true
-                    throw error
-                }
-            }
+            try engineRestart.restartForPlay { try existing.start() }
             return existing
         }
         let new = try CHHapticEngine()
         new.resetHandler = { [weak self] in
             guard let self = self else { return }
-            self.engineNeedsStart = false
-            do {
-                try self.engine?.start()
-            } catch {
-                // A reset can arrive while the app cannot start the engine,
-                // for example when suspended. Retry on the next play.
-                self.engineNeedsStart = true
-            }
+            self.engineRestart.restartAfterReset { try self.engine?.start() }
         }
         new.stoppedHandler = { [weak self] _ in
-            self?.engineNeedsStart = true
+            self?.engineRestart.markNeedsStart()
         }
         try new.start()
         engine = new
@@ -217,7 +198,7 @@ internal final class CoreHapticsHandler {
             // Capability flags inform callers whether they can rely on it.
             // Restart before the next play, so a failure caused by an engine
             // stop that went unnoticed cannot silence haptics for good.
-            engineNeedsStart = true
+            engineRestart.markNeedsStart()
         }
     }
 }
