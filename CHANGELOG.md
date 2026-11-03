@@ -1,4 +1,4 @@
-## Unreleased
+## 2.3.1
 
 ### Fixed
 - iOS only: Core Haptics patterns, waveforms and one-shots no longer go
@@ -7,7 +7,9 @@
   interrupts and idle timeouts), and the handler kept reusing the stopped
   instance, so every later `start(atTime:)` failed inside the swallowed
   `do/catch`. The stop is now tracked in `stoppedHandler` and the engine is
-  started again before the next play. No API change.
+  started again before the next play, and a restart that fails after a
+  haptic server reset is retried the same way. No API change. Thanks
+  @Kayke-ns.
 
 ## 2.3.0
 

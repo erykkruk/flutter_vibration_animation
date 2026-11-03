@@ -23,15 +23,29 @@ internal final class CoreHapticsHandler {
     private func ensureEngine() throws -> CHHapticEngine {
         if let existing = engine {
             if engineNeedsStart {
-                try existing.start()
+                // Cleared first: the handlers run off the main thread, so a
+                // stop arriving during start() must not be overwritten.
                 engineNeedsStart = false
+                do {
+                    try existing.start()
+                } catch {
+                    engineNeedsStart = true
+                    throw error
+                }
             }
             return existing
         }
         let new = try CHHapticEngine()
         new.resetHandler = { [weak self] in
-            self?.engineNeedsStart = false
-            try? self?.engine?.start()
+            guard let self = self else { return }
+            self.engineNeedsStart = false
+            do {
+                try self.engine?.start()
+            } catch {
+                // A reset can arrive while the app cannot start the engine,
+                // for example when suspended. Retry on the next play.
+                self.engineNeedsStart = true
+            }
         }
         new.stoppedHandler = { [weak self] _ in
             self?.engineNeedsStart = true
@@ -201,6 +215,9 @@ internal final class CoreHapticsHandler {
         } catch {
             // Engine failed — silently swallow rather than crashing the app.
             // Capability flags inform callers whether they can rely on it.
+            // Restart before the next play, so a failure caused by an engine
+            // stop that went unnoticed cannot silence haptics for good.
+            engineNeedsStart = true
         }
     }
 }
